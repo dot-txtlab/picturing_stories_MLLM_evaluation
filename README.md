@@ -6,10 +6,6 @@ illustrations, the raw model outputs, the human annotations, and code to
 regenerate the paper's tables, figures, and analyses **without any new model
 inference**.
 
-> **Anonymity note:** intended for anonymized hosting during review. Do not add
-> author-identifying metadata (git author, ORCID, institutional paths) before
-> the review period ends.
-
 ## Contents
 
 ```
