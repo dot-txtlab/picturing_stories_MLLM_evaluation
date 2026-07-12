@@ -104,6 +104,27 @@ LLaVA         0.87    0.031    0.94    0.032    0.90    0.15
 
 Set r uses the 3-category setting distribution; Int r is image-level.
 
+======================================================================
+H. FIGURE 4: DISTRIBUTIONAL TESTS, model vs human emotional intensity
+======================================================================
+Model     P(mod<=2) P(hum<=2)  Wilcoxon p rank-bis r     KS p   Wass    skew m/h
+--------------------------------------------------------------------------------
+Gem2.5         0.64      0.41    1.85e-56      -0.73  2.1e-45   0.74  0.86/0.07
+GPT            0.75      0.41    1.41e-63      -0.77  2.3e-70   0.72  0.94/0.07
+Claude         0.74      0.41    3.55e-72      -0.81  3.7e-65   0.79  0.80/0.07
+Qwen           0.65      0.41    3.54e-38      -0.59  2.8e-38   0.62  0.80/0.07
+LLaVA          0.01      0.41    1.51e-07       0.23  6.6e-69   0.92 -2.38/0.07
+
+Rating-level distribution (Gemini zeroshot), P(level):
+  level         1      2      3      4      5
+  model      0.51   0.17   0.14   0.14   0.05
+  human      0.21   0.20   0.29   0.21   0.10
+
+Model mass is shifted toward 1-2 and is more right-skewed than human;
+Wilcoxon signed-rank confirms model ratings are systematically LOWER than
+the per-image human mean (negative rank-biserial), and KS confirms the two
+rating distributions differ in shape (all p < .001 for frontier models).
+
 
 Loading BAAI/bge-m3 (SOTA embedding model)...
 ======================================================================
