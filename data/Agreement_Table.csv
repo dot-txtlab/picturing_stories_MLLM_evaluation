@@ -1,0 +1,9 @@
+Task,Name,Type,Full Agree,Majority,Jaccard,Containment,Ordinal Distance
+T0,Illustration,Single (2),85.4%,--,--,--,--
+T1,Characters,Multi (9),52.5%,72.9%,0.78,0.89,--
+T2,Setting,Single (3),75.3%,95.5%,--,--,--
+T3,Objects,Multi (8),33.7%,60.8%,0.56,0.78,--
+T4,Intensity,Ordinal (5),15.3%,68.9%,--,--,0.67
+T5,Actions,Multi (21),24.7%,52.9%,0.44,0.67,--
+T6,Family,Single (2),66.5%,--,--,--,--
+T7,Family Behavior,Multi (12),8.8%,62.1%,0.33,0.67,--

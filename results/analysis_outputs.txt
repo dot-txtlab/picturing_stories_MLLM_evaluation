@@ -1,0 +1,162 @@
+======================================================================
+A. REVISED TABLE 2  (mean-based intensity; human ceiling rows)
+======================================================================
+Row        Illus%   Set%  CharJ   ObjJ   IntD  ActF1
+----------------------------------------------------
+Human(full)   85.4%  75.3%   0.78   0.56   0.67   0.44
+Human(maj)      --  95.5%     --     --     --   52.9
+Claude-0     97.6   83.7   0.60   0.59   0.87   0.57
+Claude-1     97.9   84.4   0.63   0.59   0.87   0.57
+Gem2.5-0     96.8   88.1   0.67   0.56   0.88   0.57
+Gem2.5-1     98.0   87.3   0.65   0.59   0.95   0.62
+GPT-0        97.6   85.4   0.64   0.48   0.81   0.61
+GPT-1        98.0   85.0   0.62   0.50   0.82   0.62
+Qwen-0       97.8   83.0   0.69   0.53   0.83   0.49
+Qwen-1       97.6   83.2   0.68   0.56   0.79   0.52
+LLaVA-0      89.0   78.8   0.49   0.47   0.91   0.35
+
+Note: IntD column is the CORRECTED mean-based intensity distance.
+Human(full) = full inter-annotator agreement; Human(maj) = majority-vote agreement.
+
+======================================================================
+B. ACTIONS micro-F1 ROBUSTNESS (all queried entities vs. n=1 subset)
+======================================================================
+Model-shot  F1(all)  N(all)  F1(n=1)  N(n=1)
+--------------------------------------------
+Gem2.5-0      0.572     993    0.574     967
+Gem2.5-1      0.620     993    0.622     967
+GPT-0         0.607     992    0.609     966
+GPT-1         0.618     993    0.620     967
+Claude-0      0.573     988    0.573     962
+Claude-1      0.573     991    0.575     965
+Qwen-0        0.487     998    0.488     972
+Qwen-1        0.516     993    0.518     967
+LLaVA-0       0.349     993    0.349     967
+
+Entity-selection facts (Gemini zeroshot, N=995):
+  queried entity present in human annotation: 993/995
+  instance-count distribution of queried entity: {1: 967, 2: 20, 3: 6}
+  fraction with exactly one instance (n=1): 0.974
+
+======================================================================
+C. CATEGORY-LEVEL BIAS TESTS w/ BENJAMINI-HOCHBERG (Gemini zeroshot)
+======================================================================
+
+[Characters]  (9 categories tested, BH-corrected)
+  category                            OR    p_raw    p_adj  sig
+  Other                             0.20    0.000    0.000  ***
+  Woman                             0.80    0.020    0.065  
+  Mythical / Imaginary Being        1.60    0.022    0.065  
+  Boy                               1.25    0.031    0.070  
+  Man                               0.85    0.042    0.075  
+  Animal                            1.12    0.188    0.247  
+  None                              1.35    0.192    0.247  
+  Girl                              1.11    0.342    0.385  
+  Animate Object                    1.27    0.503    0.503  
+
+[Objects]  (8 categories tested, BH-corrected)
+  category                            OR    p_raw    p_adj  sig
+  None                              0.11    0.000    0.000  ***
+  Toys                              2.97    0.000    0.001  ***
+  Household items and tools         1.34    0.001    0.003  ***
+  Architecture                      0.80    0.005    0.011  ***
+  Reading and Art                   1.43    0.026    0.042  ***
+  Nature                            0.92    0.278    0.371  
+  Vehicles                          1.17    0.404    0.461  
+  Other                             1.11    0.534    0.534  
+
+[Actions]  (21 categories tested, BH-corrected)
+  category                            OR    p_raw    p_adj  sig
+  STANDING                          0.45    0.000    0.000  ***
+  LOOKING                           1.94    0.000    0.000  ***
+  SITTING                           0.47    0.000    0.000  ***
+  TALKING                           2.52    0.000    0.000  ***
+  WORKING                           2.40    0.000    0.000  ***
+  SLEEPING                          0.32    0.002    0.005  ***
+  GIVING                            3.08    0.004    0.013  ***
+  GESTURING                         1.39    0.012    0.031  ***
+  PLAYING                           1.80    0.013    0.031  ***
+  ANIMALNOISE                       2.68    0.080    0.165  
+  HOLDINGSOMETHINGNOTSOMEONE        1.16    0.087    0.165  
+  WALKING                           0.82    0.254    0.445  
+  HOLDINGHANDSOREMBRACINGSOMEONE    0.82    0.337    0.544  
+  MOVINGACTIVELYRUNNINGJUMPINGDANC  0.91    0.560    0.811  
+  LISTENING                         1.22    0.579    0.811  
+  CRYING                            1.18    0.712    0.923  
+  POINTING                          1.10    0.791    0.923  
+  READING                           1.10    0.791    0.923  
+  VIOLENTACTION                     1.06    0.886    0.979  
+  BEINGEMBRACED                     1.07    1.000    1.000  
+  EATINGDRINKING                    1.02    1.000    1.000  
+
+(Character/object tests on N=890 illustration-present pages)
+
+======================================================================
+D. CORPUS-LEVEL (AGGREGATE) AGREEMENT, PER MODEL  [not just Gemini]
+======================================================================
+Model       Char r Char MAD   Obj r  Obj MAD   Set r   Int r
+------------------------------------------------------------
+Gem2.5        0.95    0.023    0.98    0.023    0.99    0.67
+GPT           0.96    0.021    0.71    0.050    0.99    0.65
+Claude        0.94    0.021    0.99    0.015    0.97    0.64
+Qwen          0.96    0.023    0.91    0.041    0.94    0.58
+LLaVA         0.87    0.031    0.94    0.032    0.90    0.15
+
+Set r uses the 3-category setting distribution; Int r is image-level.
+
+
+Loading BAAI/bge-m3 (SOTA embedding model)...
+======================================================================
+E. CHAR/OBJ: embedding soft-set F1 (bge-m3) vs. Jaccard  [W1Nv-1]
+======================================================================
+Model-shot CharJacc  CharEmb  ObjJacc   ObjEmb
+----------------------------------------------
+Gem2.5-0       0.67     0.81     0.56     0.77
+Gem2.5-1       0.65     0.81     0.59     0.77
+GPT-0          0.64     0.82     0.48     0.74
+GPT-1          0.62     0.79     0.50     0.74
+Claude-0       0.60     0.80     0.59     0.79
+Claude-1       0.63     0.86     0.59     0.81
+Qwen-0         0.69     0.90     0.53     0.82
+Qwen-1         0.68     0.89     0.56     0.81
+LLaVA-0        0.49     0.75     0.47     0.73
+
+Embedding soft-F1 credits near-synonyms (Dog~Animal, Animals~Animal)
+that exact-match Jaccard penalizes.
+
+======================================================================
+F. CAPTIONS: bge-m3 cosine to human captions (+ spread)  [W1Nv-2]
+======================================================================
+Model-shot  mean cos     std     N
+----------------------------------
+Human-Human     0.657   0.105  1188
+Gem2.5-0       0.649   0.070   209
+Gem2.5-1       0.657   0.069   209
+GPT-0          0.655   0.065   209
+GPT-1          0.661   0.073   209
+Claude-0       0.611   0.075   209
+Claude-1       0.627   0.079   209
+Qwen-0         0.614   0.072   209
+Qwen-1         0.637   0.074   209
+
+NB: bge-m3 spreads models over a wider range than BERTScore's compressed
+~0.80-0.90 band (paper Fig 5), improving discrimination between tiers.
+
+======================================================================
+G. CAPTION FACTUAL-VALIDATION INTER-ANNOTATOR AGREEMENT  [CMEQ-3]
+======================================================================
+  Hallucinations:
+     items=2950   base-rate(count==0)=58%   mean|pairwise diff|=0.93 (on 0-5 scale)
+     binary 'error present?': unanimous=45%, majority(>half) agree=95%
+     Krippendorff-alpha (ordinal counts) =0.049
+  Missing:
+     items=2950   base-rate(count==0)=65%   mean|pairwise diff|=0.83 (on 0-5 scale)
+     binary 'error present?': unanimous=43%, majority(>half) agree=95%
+     Krippendorff-alpha (ordinal counts) =0.017
+
+Interpretation: the fine-grained 0-4+ COUNT is skewed to 0 (low prevalence),
+which deflates chance-corrected alpha (the 'alpha paradox') despite small
+pairwise differences. The BINARY 'error present?' decision that Table 3 relies
+on has clear majority agreement and is the reliable unit; fine-grained counts
+should be read cautiously and aggregated across annotators.
+
