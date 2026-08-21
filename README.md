@@ -1,10 +1,8 @@
-# Replication Package — Evaluating Multi-Modal LLMs on Historical Book Illustrations
+# Evaluating Multi-Modal LLMs on Historical Book Illustrations - Replication Package
 
-This package reproduces the evaluation in *"Evaluating Multi-Modal LLMs on
-Historical Book Illustrations"* (Submission 3683). It contains the sampled
+This package reproduces the evaluation in Jiaming Jiang and Andrew Piper, *"Evaluating Multi-Modal LLMs on Historical Book Illustrations"* (EMNLP 2026). It contains the sampled
 illustrations, the raw model outputs, the human annotations, and code to
-regenerate the paper's tables, figures, and analyses **without any new model
-inference**.
+regenerate the paper's tables, figures, and analyses.
 
 ## Contents
 
