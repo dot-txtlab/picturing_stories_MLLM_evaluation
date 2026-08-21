@@ -1,0 +1,72 @@
+% Requires \usepackage{booktabs} in the preamble.
+% This is one numbered float containing two tabular panels, so subsequent
+% table numbers do not change.
+\begin{table*}[t]
+  \centering
+  \caption{Model performance against human consensus annotations (Panel A) and
+  inter-annotator agreement among humans (Panel B). Model values and human
+  agreement values are reported separately because they do not always use the
+  same metric. Human agreement is therefore an interpretive reference rather
+  than a competitor score.}
+  \label{tab:model-human-evaluation}
+  \small
+
+  \textbf{Panel A: Model performance against human consensus annotations}
+  \par\smallskip
+  \begin{tabular}{lrrrrrr}
+    \toprule
+    Model &
+    \shortstack{Illustration\\Exact Match (\%)} &
+    \shortstack{Setting\\Exact Match (\%)} &
+    \shortstack{Characters\\Jaccard} &
+    \shortstack{Objects\\Jaccard} &
+    \shortstack{Intensity\\Distance $\downarrow$} &
+    \shortstack{Actions\\Micro-F1} \\
+    \midrule
+    Claude-0    & 97.6 & 83.7 & 0.60 & \textbf{0.59} & 0.87 & 0.57 \\
+    Claude-1    & 97.9 & 84.4 & 0.63 & \textbf{0.59} & 0.87 & 0.58 \\
+    Gemini2.5-0 & 96.8 & \textbf{88.1} & 0.67 & 0.56 & 0.88 & 0.57 \\
+    Gemini2.5-1 & \textbf{98.0} & 87.3 & 0.65 & \textbf{0.59} & 0.95 & \textbf{0.62} \\
+    GPT-0       & 97.6 & 85.4 & 0.64 & 0.48 & 0.81 & 0.61 \\
+    GPT-1       & \textbf{98.0} & 85.0 & 0.62 & 0.50 & 0.82 & \textbf{0.62} \\
+    Qwen-0      & 97.8 & 83.0 & \textbf{0.69} & 0.53 & 0.83 & 0.49 \\
+    Qwen-1      & 97.6 & 83.2 & 0.68 & 0.56 & \textbf{0.79} & 0.52 \\
+    LLaVA-0     & 89.0 & 78.8 & 0.49 & 0.47 & 0.91 & 0.35 \\
+    \bottomrule
+  \end{tabular}
+
+  \vspace{0.9em}
+
+  \textbf{Panel B: Human inter-annotator agreement}
+  \par\smallskip
+  \begin{tabular}{lrrrr}
+    \toprule
+    Task & Full Agreement (\%) & Majority Agreement (\%) & Jaccard &
+    Ordinal Distance $\downarrow$ \\
+    \midrule
+    Illustration        & 85.4 & --   & --   & --   \\
+    Characters          & 52.5 & 72.9 & 0.78 & --   \\
+    Setting             & 75.3 & 95.5 & --   & --   \\
+    Objects             & 33.7 & 60.8 & 0.56 & --   \\
+    Emotional intensity & 15.3 & 68.9 & --   & 0.67 \\
+    Actions             & 24.7 & 52.9 & 0.44 & --   \\
+    \bottomrule
+  \end{tabular}
+
+  \begin{minipage}{0.98\textwidth}
+    \vspace{0.5em}
+    \footnotesize
+    \textit{Notes.} In Panel A, models are scored against the human
+    majority-vote or consensus annotation. Suffixes 0 and 1 denote zero-shot and
+    one-shot prompting, respectively. Jaccard values are means across images.
+    Intensity is the mean absolute distance from the mean human rating on the
+    1--5 scale; lower values indicate closer agreement. Actions are evaluated
+    with micro-averaged F1 after restricting the analysis to queried entity types
+    that have exactly one instance in the human annotation. In Panel B, full
+    agreement means that all annotators concurred, while majority agreement means
+    that more than half concurred. Jaccard and ordinal distance are reported only
+    for tasks for which those inter-annotator measures are available. Panel B
+    describes agreement among annotators and should not be interpreted as model
+    performance against consensus.
+  \end{minipage}
+\end{table*}

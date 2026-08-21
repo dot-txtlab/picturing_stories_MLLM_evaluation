@@ -17,6 +17,8 @@ replication_package/
 │   └── 04_embedding_and_caption_metrics.py  # bge-m3 label/caption similarity;
 │                                       #   caption inter-annotator agreement
 ├── results/                           # regenerated result tables + raw outputs
+│   ├── Table2_revised.md              # two-panel model/human Table 2
+│   └── Table2_two_panel.tex           # camera-ready LaTeX for Table 2
 ├── data/
 │   ├── model_outputs/
 │   │   ├── T0-T4_All_Models_Output.jsonl   # raw model responses, tasks T0–T4
@@ -41,11 +43,11 @@ corpus. Filenames follow `<book_id>_page<N>.jpg` (the normalized IA identifier).
 ## Quick start
 
 ```bash
-# Table 2 (all models × prompting conditions) — pure Python stdlib, no deps
+# Table 2 (all models × prompting conditions) — pure Python stdlib, no deps.
+# The camera-ready table uses singleton-only Actions scores.
 cd code
-python 02_table2_metrics.py
-python 02_table2_metrics.py --csv table2.csv          # also write a tidy CSV
-python 02_table2_metrics.py --actions-n1              # actions restricted to n=1 entities
+python 02_table2_metrics.py --actions-n1
+python 02_table2_metrics.py --actions-n1 --csv ../results/Table2_model_metrics.csv
 
 # Error analyses, RQ1 (date), RQ2 (corpus-level): R (dplyr, stringr, ggplot2, rstatix)
 Rscript Picturing_Evaluation.R
@@ -93,7 +95,10 @@ Values match within rounding except where noted:
   "no characters/objects" is meaningful); this convention reproduces the paper
   (dropping them inflates Jaccard by ≈0.09).
 - **Actions micro-F1:** TP/FP/FN pooled across images for the queried entity's
-  action set. Reproduces the paper to ±0.01.
+  action set. The camera-ready Table 2 restricts this calculation to queried
+  entity types with exactly one instance (`n=1`) in the human annotation. The
+  all-query result is retained as a robustness check; the two variants differ by
+  no more than 0.002 F1 for any model.
 - **Intensity distance:** mean |model − human| on the 1–5 scale. When annotators
   disagreed, the consensus file records **all** distinct ratings for an image
   (69% of images have a single rating; 31% list ≥2). The human value is the
@@ -102,9 +107,14 @@ Values match within rounding except where noted:
   mean-based (reproducible) values are lower across all models — update the
   revised Table 2 accordingly.
 - The paper's Table 2 **Intensity human value of 0.98 is a typo**; the correct
-  human ordinal distance is **0.67** (see `Agreement_Table.csv`). Confirm this
-  agreement-table value uses the same mean-based collapse for a like-for-like
-  human baseline.
+  human ordinal distance is **0.67** (see `Agreement_Table.csv`).
+- **Model and human results are presented in separate Table 2 panels.** Model
+  cells compare predictions with the human majority/consensus annotation. Human
+  full agreement, majority agreement, Jaccard, and ordinal distance describe
+  agreement among annotators and are reported in their native units. They are
+  interpretive references rather than competitor scores; in particular, human
+  Actions Jaccard or majority agreement must not be placed under a model
+  Actions micro-F1 heading.
 
 ## Software / environment
 

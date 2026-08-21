@@ -5,7 +5,7 @@
 Numeric analyses requested by reviewers (Submission 3683), all from the released
 CSVs (no new model inference). Sections:
 
-  A. Revised Table 2 (corrected mean-based intensity; full + majority human rows)  [CMEQ-1]
+  A. Revised Table 2 (model metrics and human agreement in separate panels)        [CMEQ-1]
   B. Actions micro-F1 robustness: all vs. n=1-entity subset                        [CMEQ-2]
   C. Category-level bias tests with Benjamini-Hochberg correction                  [CMEQ-4]
   D. Corpus-level (aggregate) agreement, per model, not just Gemini                [CMEQ-5]
@@ -48,7 +48,7 @@ def hmean_intensity(t4):
 # ---------------------------------------------------------------------------
 def section_A():
     print("=" * 70)
-    print("A. REVISED TABLE 2  (mean-based intensity; human ceiling rows)")
+    print("A. REVISED TABLE 2  (model metrics and human agreement separated)")
     print("=" * 70)
     rows = load("DATA_Illustration_IA_Evaluation_T0_T4.csv")
     t5 = load("DATA_Illustration_IA_Evaluation_T5.csv")
@@ -57,12 +57,13 @@ def section_A():
     ga = defaultdict(list)
     for r in t5: ga[(canon(r["model"]), r["shot_type"])].append(r)
 
-    def actions_f1(rs):
+    def actions_f1(rs, only_n1=True):
         tp = fp = fn = 0
         for r in rs:
-            m = re.search(re.escape(r["entity"].strip()) + r"\[n=\d+\]\{([^}]*)\}", r["T5"] or "")
+            m = re.search(re.escape(r["entity"].strip()) + r"\[n=(\d+)\]\{([^}]*)\}", r["T5"] or "")
             if not m: continue
-            H = {a.strip() for a in m.group(1).split(";") if a.strip()}
+            if only_n1 and int(m.group(1)) != 1: continue
+            H = {a.strip() for a in m.group(2).split(";") if a.strip()}
             M = {a.strip() for a in (r["actions"] or "").split(";") if a.strip()}
             tp += len(M & H); fp += len(M - H); fn += len(H - M)
         p = tp/(tp+fp) if tp+fp else 0; rc = tp/(tp+fn) if tp+fn else 0
@@ -70,15 +71,9 @@ def section_A():
 
     order = [("claude-sonnet-4-5","Claude"),(GEM,"Gem2.5"),("gpt-4.1-2025-04-14","GPT"),
              ("qwen3-vl-8b-instruct","Qwen"),("llava-hf/llava-v1.6-vicuna-13b-hf","LLaVA")]
-    hdr = f"{'Row':<9}{'Illus%':>8}{'Set%':>7}{'CharJ':>7}{'ObjJ':>7}{'IntD':>7}{'ActF1':>7}"
+    print("Panel A: Model performance against human consensus annotations")
+    hdr = f"{'Model':<10}{'Illus%':>8}{'Set%':>7}{'CharJ':>7}{'ObjJ':>7}{'IntD':>7}{'ActF1(n=1)':>12}"
     print(hdr); print("-"*len(hdr))
-    # human ceiling rows from Agreement_Table
-    ag = {r["Task"]: r for r in load("Agreement_Table.csv")}
-    print(f"{'Human(full)':<9}{ag['T0']['Full Agree']:>8}{ag['T2']['Full Agree']:>7}"
-          f"{ag['T1']['Jaccard']:>7}{ag['T3']['Jaccard']:>7}{ag['T4']['Ordinal Distance']:>7}"
-          f"{'0.44':>7}")
-    print(f"{'Human(maj)':<9}{'--':>8}{ag['T2']['Majority']:>7}{'--':>7}{'--':>7}{'--':>7}"
-          f"{ag['T5']['Majority'].replace('%',''):>7}")
     for mid, short in order:
         for shot, sfx in (("zeroshot","0"),("oneshot","1")):
             rs = g.get((mid, shot))
@@ -96,9 +91,22 @@ def section_A():
                 except: continue
                 if h is not None: dd.append(abs(mv-h))
             f1 = actions_f1(ga.get((mid, shot), []))
-            print(f"{short+'-'+sfx:<9}{illv:>8.1f}{stv:>7.1f}{cj:>7.2f}{oj:>7.2f}{np.mean(dd):>7.2f}{f1:>7.2f}")
-    print("\nNote: IntD column is the CORRECTED mean-based intensity distance.")
-    print("Human(full) = full inter-annotator agreement; Human(maj) = majority-vote agreement.\n")
+            print(f"{short+'-'+sfx:<10}{illv:>8.1f}{stv:>7.1f}{cj:>7.2f}{oj:>7.2f}{np.mean(dd):>7.2f}{f1:>12.2f}")
+
+    print("\nPanel B: Human inter-annotator agreement")
+    print(f"{'Task':<22}{'Full%':>8}{'Majority%':>11}{'Jaccard':>10}{'OrdDist':>10}")
+    print("-" * 61)
+    ag = {r["Task"]: r for r in load("Agreement_Table.csv")}
+    for task, label in (("T0", "Illustration"), ("T1", "Characters"),
+                        ("T2", "Setting"), ("T3", "Objects"),
+                        ("T4", "Emotional intensity"), ("T5", "Actions")):
+        r = ag[task]
+        print(f"{label:<22}{r['Full Agree']:>8}{r['Majority']:>11}"
+              f"{r['Jaccard']:>10}{r['Ordinal Distance']:>10}")
+    print("\nNotes: Panel A uses the corrected mean-based intensity distance and"
+          " singleton-only Actions micro-F1. Panel B reports human agreement in"
+          " each measure's native units; it is an interpretive reference, not a"
+          " model-performance row.\n")
 
 # ---------------------------------------------------------------------------
 # B. Actions robustness (n=1 subset)

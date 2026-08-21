@@ -1,22 +1,33 @@
 ======================================================================
-A. REVISED TABLE 2  (mean-based intensity; human ceiling rows)
+A. REVISED TABLE 2  (model metrics and human agreement separated)
 ======================================================================
-Row        Illus%   Set%  CharJ   ObjJ   IntD  ActF1
-----------------------------------------------------
-Human(full)   85.4%  75.3%   0.78   0.56   0.67   0.44
-Human(maj)      --  95.5%     --     --     --   52.9
-Claude-0     97.6   83.7   0.60   0.59   0.87   0.57
-Claude-1     97.9   84.4   0.63   0.59   0.87   0.57
-Gem2.5-0     96.8   88.1   0.67   0.56   0.88   0.57
-Gem2.5-1     98.0   87.3   0.65   0.59   0.95   0.62
-GPT-0        97.6   85.4   0.64   0.48   0.81   0.61
-GPT-1        98.0   85.0   0.62   0.50   0.82   0.62
-Qwen-0       97.8   83.0   0.69   0.53   0.83   0.49
-Qwen-1       97.6   83.2   0.68   0.56   0.79   0.52
-LLaVA-0      89.0   78.8   0.49   0.47   0.91   0.35
+Panel A: Model performance against human consensus annotations
+Model       Illus%   Set%  CharJ   ObjJ   IntD  ActF1(n=1)
+----------------------------------------------------------
+Claude-0      97.6   83.7   0.60   0.59   0.87        0.57
+Claude-1      97.9   84.4   0.63   0.59   0.87        0.58
+Gem2.5-0      96.8   88.1   0.67   0.56   0.88        0.57
+Gem2.5-1      98.0   87.3   0.65   0.59   0.95        0.62
+GPT-0         97.6   85.4   0.64   0.48   0.81        0.61
+GPT-1         98.0   85.0   0.62   0.50   0.82        0.62
+Qwen-0        97.8   83.0   0.69   0.53   0.83        0.49
+Qwen-1        97.6   83.2   0.68   0.56   0.79        0.52
+LLaVA-0       89.0   78.8   0.49   0.47   0.91        0.35
 
-Note: IntD column is the CORRECTED mean-based intensity distance.
-Human(full) = full inter-annotator agreement; Human(maj) = majority-vote agreement.
+Panel B: Human inter-annotator agreement
+Task                     Full%  Majority%   Jaccard   OrdDist
+-------------------------------------------------------------
+Illustration             85.4%         --        --        --
+Characters               52.5%      72.9%      0.78        --
+Setting                  75.3%      95.5%        --        --
+Objects                  33.7%      60.8%      0.56        --
+Emotional intensity      15.3%      68.9%        --      0.67
+Actions                  24.7%      52.9%      0.44        --
+
+Notes: Panel A uses the corrected mean-based intensity distance and
+singleton-only Actions micro-F1. Panel B reports human agreement in each
+measure's native units; it is an interpretive reference, not a model-performance
+row.
 
 ======================================================================
 B. ACTIONS micro-F1 ROBUSTNESS (all queried entities vs. n=1 subset)
@@ -180,4 +191,3 @@ which deflates chance-corrected alpha (the 'alpha paradox') despite small
 pairwise differences. The BINARY 'error present?' decision that Table 3 relies
 on has clear majority agreement and is the reliable unit; fine-grained counts
 should be read cautiously and aggregated across annotators.
-

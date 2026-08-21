@@ -25,8 +25,9 @@ nothing (differences ≤ 0.002 F1):
 | Qwen-1 | 0.516 | 993 | 0.518 | 967 |
 | LLaVA-0 | 0.349 | 993 | 0.349 | 967 |
 
-**Takeaway:** the multi-instance cases do not drive any result; we will (a) add
-the precise pipeline description as Appendix B.2, and (b) restrict the reported
-Actions evaluation to n=1 entities (or add this as a robustness row).
+**Takeaway:** the multi-instance cases do not drive any result. The camera-ready
+Table 2 reports the `n=1` scores, while the all-query scores above are retained
+as a robustness check. The precise selection protocol is documented in the
+paper's Appendix B.2.
 
 Regenerate with `code/03_rebuttal_analyses.py` (Section B).

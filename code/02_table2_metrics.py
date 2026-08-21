@@ -13,11 +13,13 @@ Table 2 columns (per model x prompting condition):
   - Intensity     : mean absolute distance (M) |model - human| on 1-5 scale (T4)
   - Actions       : micro-averaged F1          vs human set for the queried entity (T5)
 
-The human agreement reference row is read from data/Agreement_Table.csv.
+Human inter-annotator agreement is printed as a separate panel, in each
+agreement measure's native units, from data/Agreement_Table.csv.
 
 Usage:
-    python 02_table2_metrics.py            # prints Table 2 to stdout
-    python 02_table2_metrics.py --csv out.csv   # also writes a tidy CSV
+    python 02_table2_metrics.py --actions-n1          # camera-ready Table 2
+    python 02_table2_metrics.py                        # all-query robustness
+    python 02_table2_metrics.py --actions-n1 --csv out.csv
 """
 
 import csv
@@ -197,19 +199,16 @@ def main():
     act = compute_actions(load("DATA_Illustration_IA_Evaluation_T5.csv"),
                           restrict_n1=args.actions_n1)
 
-    # human agreement reference row
+    # Human agreement is reported separately from model-versus-consensus scores.
     human = {}
     with open(f"{DATA}/Agreement_Table.csv") as f:
         for r in csv.DictReader(f):
             human[r["Task"]] = r
 
+    print("Panel A: Model performance against human consensus annotations")
     hdr = f"{'Model':<10} {'Illus%':>7} {'Set%':>7} {'CharJ':>6} {'ObjJ':>6} {'IntD':>6} {'ActF1':>6}"
     print(hdr)
     print("-" * len(hdr))
-    # human reference (full-agreement / ordinal distance / majority for actions)
-    print(f"{'Human':<10} {human['T0']['Full Agree']:>7} {human['T2']['Full Agree']:>7} "
-          f"{human['T1']['Jaccard']:>6} {human['T3']['Jaccard']:>6} "
-          f"{human['T4']['Ordinal Distance']:>6} {human['T5']['Majority']:>6}")
 
     tidy = []
     for model in MODEL_ORDER:
@@ -234,6 +233,18 @@ def main():
                 "intensity_distance": m.get("intensity"),
                 "actions_micro_f1": f1,
             })
+
+    print("\nPanel B: Human inter-annotator agreement")
+    print(f"{'Task':<22} {'Full%':>7} {'Majority%':>10} {'Jaccard':>9} {'OrdDist':>9}")
+    print("-" * 61)
+    for task, label in (("T0", "Illustration"), ("T1", "Characters"),
+                        ("T2", "Setting"), ("T3", "Objects"),
+                        ("T4", "Emotional intensity"), ("T5", "Actions")):
+        r = human[task]
+        print(f"{label:<22} {r['Full Agree']:>7} {r['Majority']:>10} "
+              f"{r['Jaccard']:>9} {r['Ordinal Distance']:>9}")
+
+    print("\nHuman agreement is an interpretive reference, not a model-performance row.")
 
     if args.csv:
         with open(args.csv, "w", newline="") as f:
